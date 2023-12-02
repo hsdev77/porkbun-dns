@@ -98,36 +98,36 @@ case "${mycmd}" in
   "--create" )
     api_url="https://porkbun.com/api/json/v3/dns/create/${mydomain}"
     echo "Creating ${myfullname} [${mytype}] with value (${myvalue})..."
-#    curl -X POST -H "Content-Type: application/json" -d "{ \"secretapikey\": \"${secret}\", \"apikey\": \"${apikey}\", \"name\": \"${myname}\", \"type\": \"${mytype}\", \"content\": \"${myvalue}\", \"ttl\": \"300\" } " ${api_url}
+    curl -X POST -H "Content-Type: application/json" -d "{ \"secretapikey\": \"${secret}\", \"apikey\": \"${apikey}\", \"name\": \"${myname}\", \"type\": \"${mytype}\", \"content\": \"${myvalue}\", \"ttl\": \"300\" } " ${api_url}
   ;;
 
   "--update" )
     api_url="https://porkbun.com/api/json/v3/dns/editByNameType/${mydomain}/${mytype}/${myname}"
     echo "Updating ${myfullname} [${mytype}] (${oldcontent}) with value (${myvalue})..."
-#    curl -X POST -H "Content-Type: application/json" -d "{ \"secretapikey\": \"${secret}\", \"apikey\": \"${apikey}\", \"content\": \"${myvalue}\", \"ttl\": \"300\" } " ${api_url}
+    curl -X POST -H "Content-Type: application/json" -d "{ \"secretapikey\": \"${secret}\", \"apikey\": \"${apikey}\", \"content\": \"${myvalue}\", \"ttl\": \"300\" } " ${api_url}
   ;;
 
   "--delete" )
     echo "Deleting ${myfullname} [${mytype}]..."
     api_url="https://porkbun.com/api/json/v3/dns/deleteByNameType/${mydomain}/${mytype}/${myname}"
-#    curl -X POST -H "Content-Type: application/json" -d "{ \"secretapikey\": \"${secret}\", \"apikey\": \"${apikey}\" } " ${api_url}
+    curl -X POST -H "Content-Type: application/json" -d "{ \"secretapikey\": \"${secret}\", \"apikey\": \"${apikey}\" } " ${api_url}
   ;;
 
   "--retrieve" )
     echo "Retrieving ${myfullname} [${mytype}]..."
     api_url="https://porkbun.com/api/json/v3/dns/retrieveByNameType/${mydomain}/${mytype}/${myname}"
-#    curl -X POST -H "Content-Type: application/json" -d "{ \"secretapikey\": \"${secret}\", \"apikey\": \"${apikey}\" } " ${api_url}
+    curl -X POST -H "Content-Type: application/json" -d "{ \"secretapikey\": \"${secret}\", \"apikey\": \"${apikey}\" } " ${api_url}
   ;;
 esac
 
 echo
-echo debug:
-echo ---------------------------------
-echo "mydomain=\"${mydomain}\""
-echo "mytype=\"${mytype}\""
-echo "myname=\"${myname}\""
-echo "myfullname=\"${myfullname}\""
-echo "myvalue=\"${myvalue}\""
-echo "oldcontent=\"${oldcontent}\""
-echo "api_url=\"${api_url}\""
-echo
+#echo debug:
+#echo ---------------------------------
+#echo "mydomain=\"${mydomain}\""
+#echo "mytype=\"${mytype}\""
+#echo "myname=\"${myname}\""
+#echo "myfullname=\"${myfullname}\""
+#echo "myvalue=\"${myvalue}\""
+#echo "oldcontent=\"${oldcontent}\""
+#echo "api_url=\"${api_url}\""
+#echo
