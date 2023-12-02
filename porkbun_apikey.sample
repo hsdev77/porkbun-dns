@@ -1,0 +1,4 @@
+#*** no space before and after the 'apikey' and 'secret' keyword
+#*** read instruction at https://kb.porkbun.com/article/190-getting-started-with-the-porkbun-api
+apikey=pk1_1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef
+secret=sk1_abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890

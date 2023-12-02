@@ -1,0 +1,133 @@
+#!/bin/bash
+
+ValidCmds=("--create" "--update" "--delete" "--retrieve")
+ValidTypes=("A" "MX" "CNAME" "ALIAS" "TXT" "NS" "AAAA" "SRV" "TLSA" "CAA")
+source "./porkbun_apikey.txt"
+
+function showusage {
+  echo
+  echo "  usage:"
+  echo "    porkbun-dns --command domain type [name|@] [value|my-public-ip|.]"
+  echo
+  echo "  valid commands: ${ValidCmds[*]}"
+  echo "  valid types: ${ValidTypes[*]}"
+  echo
+  echo "  example:"
+  echo "    porkbun-dns --retrieve example.com A www"
+  echo "    porkbun-dns --update example.com A @ my-public-ip"
+  echo
+}
+
+for i in "${ValidCmds[@]}"
+do
+  if [[ "$i" == "$1" ]]
+  then
+    mycmd="$i"
+  fi
+done
+
+if [ -z "${mycmd}" ]
+then
+  echo "Error: command is required."
+  showusage
+  exit -1
+fi
+
+if [ -z "$2" ]
+then
+  echo "Error: domain is required."
+  showusage
+  exit -1
+fi
+mydomain=$2
+
+for i in "${ValidTypes[@]}"
+do
+  if [[ "$i" == "$3" ]]
+  then
+    mytype="$i"
+  fi
+done
+
+if [ -z "${mytype}" ]
+then
+  echo "Error: type is required."
+  showusage
+  exit -1
+fi
+
+if [ -z "$4" ] || [ "$4" = "@" ]
+then
+  myname=""
+  myfullname=${mydomain}
+else
+  myname=$4
+  myfullname=${myname}.${mydomain}
+fi
+
+if [ "$5" = "." ] || [ "$5" = "my-public-ip" ] 
+then
+  myvalue=$(dig +short myip.opendns.com @resolver1.opendns.com)
+  echo "Curent public ip is the new value."
+else
+  myvalue=$5
+fi
+
+oldcontent=$(dig +short -t ${mytype} ${myfullname} @curitiba.ns.porkbun.com)
+
+if [ -z "${myvalue}" ]
+then
+  if [ "${mycmd}" = "--create" ] || [ "${mycmd}" = "--update" ]
+  then
+    echo "Error: value is required."
+    showusage
+    exit -1
+  elif [ "${mycmd}" = "--delete" ] || [ "${mycmd}" = "--retrieve" ]
+  then
+    echo "Current value is \"${oldcontent}\""
+  fi
+fi
+
+if [ "${mycmd}" = "--update" ] && [ "$oldcontent" = "$myvalue" ]
+then
+  echo "${myfullname} [${mytype}] (${oldcontent}) not updated."
+  exit -1
+fi
+
+case "${mycmd}" in
+  "--create" )
+    api_url="https://porkbun.com/api/json/v3/dns/create/${mydomain}"
+    echo "Creating ${myfullname} [${mytype}] with value (${myvalue})..."
+#    curl -X POST -H "Content-Type: application/json" -d "{ \"secretapikey\": \"${secret}\", \"apikey\": \"${apikey}\", \"name\": \"${myname}\", \"type\": \"${mytype}\", \"content\": \"${myvalue}\", \"ttl\": \"300\" } " ${api_url}
+  ;;
+
+  "--update" )
+    api_url="https://porkbun.com/api/json/v3/dns/editByNameType/${mydomain}/${mytype}/${myname}"
+    echo "Updating ${myfullname} [${mytype}] (${oldcontent}) with value (${myvalue})..."
+#    curl -X POST -H "Content-Type: application/json" -d "{ \"secretapikey\": \"${secret}\", \"apikey\": \"${apikey}\", \"content\": \"${myvalue}\", \"ttl\": \"300\" } " ${api_url}
+  ;;
+
+  "--delete" )
+    echo "Deleting ${myfullname} [${mytype}]..."
+    api_url="https://porkbun.com/api/json/v3/dns/deleteByNameType/${mydomain}/${mytype}/${myname}"
+#    curl -X POST -H "Content-Type: application/json" -d "{ \"secretapikey\": \"${secret}\", \"apikey\": \"${apikey}\" } " ${api_url}
+  ;;
+
+  "--retrieve" )
+    echo "Retrieving ${myfullname} [${mytype}]..."
+    api_url="https://porkbun.com/api/json/v3/dns/retrieveByNameType/${mydomain}/${mytype}/${myname}"
+#    curl -X POST -H "Content-Type: application/json" -d "{ \"secretapikey\": \"${secret}\", \"apikey\": \"${apikey}\" } " ${api_url}
+  ;;
+esac
+
+echo
+echo debug:
+echo ---------------------------------
+echo "mydomain=\"${mydomain}\""
+echo "mytype=\"${mytype}\""
+echo "myname=\"${myname}\""
+echo "myfullname=\"${myfullname}\""
+echo "myvalue=\"${myvalue}\""
+echo "oldcontent=\"${oldcontent}\""
+echo "api_url=\"${api_url}\""
+echo
