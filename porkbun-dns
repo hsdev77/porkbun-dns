@@ -18,6 +18,28 @@ function showusage {
   echo
 }
 
+f1=$(command -v curl)
+if [ -z "$f1" ]
+then
+  echo "Error: cannot find curl."
+  echo "  This script requires curl, please install it first. For example, in debian the package name is 'curl'"
+  echo "  example:"
+  echo "    sudo apt install curl"
+  echo
+  exit -1
+fi
+
+f1=$(command -v dig)
+if [ -z "$f1" ]
+then
+  echo "Error: cannot find dig."
+  echo "  This script requires dig, please install it first. For example, in debian the package name is 'dnsutils'"
+  echo "  example:"
+  echo "    sudo apt install dnsutils"
+  echo
+  exit -1
+fi
+
 for i in "${ValidCmds[@]}"
 do
   if [[ "$i" == "$1" ]]
