@@ -2,7 +2,6 @@
 
 ValidCmds=("--create" "--update" "--delete" "--retrieve")
 ValidTypes=("A" "MX" "CNAME" "ALIAS" "TXT" "NS" "AAAA" "SRV" "TLSA" "CAA")
-source "./porkbun_apikey.txt"
 
 function showusage {
   echo
@@ -37,6 +36,23 @@ then
   echo "  example:"
   echo "    sudo apt install dnsutils"
   echo
+  exit -1
+fi
+
+if [ -f "./porkbun_apikey.txt" ]
+then
+  source "./porkbun_apikey.txt"
+elif [ -f "/etc/porkbun-dns/porkbun_apikey.txt" ]
+then
+  source "/etc/porkbun-dns/porkbun_apikey.txt"
+else
+  echo "Error: cannot find porkbun_apikey.txt file."
+  exit -1
+fi
+
+if [ -z "$apikey" ] || [ -z "$secret" ]
+then
+  echo "Error: invalid apikey or secret."
   exit -1
 fi
 
