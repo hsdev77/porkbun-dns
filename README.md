@@ -30,7 +30,7 @@ Below are the format of the _porkbun_apikey.txt_ :
 >_apikey=pk1_1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef_
 >_secret=sk1_abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890_
 
-##Usage
+## Usage
 
 - cli syntax:
 >_porkbun-dns --command domain type [name|@] [value|my-public-ip|.]_
